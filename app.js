@@ -35,6 +35,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))); //Set path for all assets
 
+
 app.use('/', routes);
 app.use('/users', users); //todo: probably don't need this
 
