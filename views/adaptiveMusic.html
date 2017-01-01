@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Adaptive Music</title>
+
+    <link href="stylesheets/nback.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link rel="stylesheet" href="stylesheets/nouislider.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="javascripts/nouislider.min.js" type="text/javascript"></script>
+    <script src="javascripts/soundmanager2-jsmin.js" type="text/javascript"></script>
+    <script src="javascripts/nback.js" type="text/javascript"></script>
+    <!--<script src="//connect.soundcloud.com/sdk.js"></script>-->
+    <script type="text/javascript">
+
+        function initSlider(obj, vbls, mp3) {
+            noUiSlider.create(obj, {
+                start: 20,
+                step: 1,
+                range: {'min': 0, 'max': 100},
+                format: wNumb({decimals: 0})
+            });
+
+            obj.noUiSlider.on('change', function (value, handle) {
+                vbls.push({'val': value[0], 'time': mp3.position}); //TODO add time increment
+                console.log(vbls);
+            });
+        }
+
+        $(document).ready(function(){
+            var distractionLog = [], pleasantnessLog = [];
+            var distractionLevel = document.getElementById('distractionLevel');
+            var pleasantnessLevel = document.getElementById('pleasantnessLevel');
+
+            // Load mp3 controls
+            soundManager.setup({
+                url: '/node_modules/soundmanager2/swf/',
+                onready: function () {
+                    var mp3 = soundManager.createSound({
+                        id: "Lorn",
+                        url: "/music/Lorn.mp3"
+                    });
+                    initSlider(distractionLevel, distractionLog, mp3); // Initialize sliders for self-reporting
+                    initSlider(pleasantnessLevel, pleasantnessLog, mp3);
+                    mp3.play();
+                }
+            });
+        });
+
+    </script>
+</head>
+<body class="container">
+    <div class="row">
+
+        <div class="col s6">
+            <div class="section">
+                <div id="nback">
+                    <button id="begin">Begin</button>
+                    <div id="topRight"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col s6">
+            <h2 class="black-text">Self-Reporting</h2>
+            <div class="section">
+                <div id="slider1" class="noUiSlider"></div><br/>
+                <div id="slider2" class="noUiSlider"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--<div id="player"></div>
+   <iframe width="100%" height="250" scrolling="no" frameborder="no"
+            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/271875247&amp;auto_play=true&amp;hide_related=false&amp;show_comments=true&amp;show_user=false&amp;show_reposts=false&amp;visual=true">
+
+    </iframe>-->
+</body>
+
+</html>
