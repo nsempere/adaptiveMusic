@@ -3,30 +3,15 @@ var express = require('express');
 module.exports = function(Trial) {
 
   var router = express.Router();
+  var files = ['Lorn']; /* todo: make this dynamic */
 
   /* GET home page. */
   router.get('/', function (req, res, next) {
     res.sendFile('adaptiveMusic.html', {'root': 'views'});
   });
 
-  /* For testing purposes:
-  router.get('/test', function (req, res, next) {
-    var trial = new Trial({song_title: "Staying Alive", trial_id: 1});
-    trial.save(function(err, trial){
-      if (err) return console.error(err);
-      console.log(trial);
-    });
-    Trial.find(function(err, trials) {
-      console.log("You have " + trials.length + " trials.");
-      console.log(trials);
-    });
-    res.sendFile('test.html', {'root': 'views'});
-
-  });*/
-
   /* Post results of a trial to database */
   router.post('/results', function (req, res, next) {
-    //todo: prep data and save to db.
     var trial = new Trial({
       song_title: req.body.title,
       distraction_log: req.body.distractionLog,
@@ -40,6 +25,13 @@ module.exports = function(Trial) {
         console.log("success!");
     });
   });
+
+  /* Request a song (randomized) */
+  router.get('/song', function (req, res, next) {
+    var mp3 = files[0]; /* Randomize this when more mp3 files come into play */
+    res.sendFile('music/' + mp3 + '.mp3', {'root': 'public'});
+  });
+
   return router;
 };
 
