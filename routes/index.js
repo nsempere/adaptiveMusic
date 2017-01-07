@@ -10,6 +10,10 @@ module.exports = function(Trial) {
     res.sendFile('adaptiveMusic.html', {'root': 'views'});
   });
 
+  router.get('/thankyou', function (req, res, next) {
+    res.sendFile('thankYou.html', {'root': 'views'});
+  });
+
   /* Post results of a trial to database */
   router.post('/results', function (req, res, next) {
     var trial = new Trial({
