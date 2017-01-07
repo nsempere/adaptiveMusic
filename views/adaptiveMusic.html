@@ -56,13 +56,16 @@
                     var song = String(randomSong());
                     var mp3 = soundManager.createSound({
                         id: song,
-                        url: '/music/' + song + '.mp3'
+                        url: '/music/' + song + '.mp3',
+                        onfinish: function() {
+                            console.log("Finished the song!");
+                            distractionLevel.setAttribute('disabled', true);
+                            pleasantnessLevel.setAttribute('disabled', true);
+                        }
                     });
 
                     initSlider(distractionLevel, distractionLog, mp3); // Initialize sliders for self-reporting
                     initSlider(pleasantnessLevel, pleasantnessLog, mp3);
-                    mp3.play();
-
                     $('#submit').click(function() {
                         $.ajax({
                             type: 'POST',
@@ -76,6 +79,8 @@
                             dataType: 'json'
                         });
                     });
+
+                    mp3.play();
                 }
             });
         });
