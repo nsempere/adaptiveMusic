@@ -17,11 +17,7 @@
     <script type="text/javascript">
         var MIN = 1, MAX = 1;
         function postSuccess() {
-            alert('Thanks for participating!');
             window.location.replace("http://localhost:3000/thankyou");
-            /* todo: redirect to some other page so they don't submit again.
-             * Put up a modal and disable the button/sliders until they pick another song.
-             */
         }
 
         function randomSong() {
@@ -46,6 +42,10 @@
 
 
         $(document).ready(function(){
+            /* Initialization for Materialize graphics */
+            $('.modal').modal();
+            $('#modal1').modal('open');
+
             var distractionLog = [], pleasantnessLog = [];
             var distractionLevel = document.getElementById('distractionLevel');
             var pleasantnessLevel = document.getElementById('pleasantnessLevel');
@@ -59,9 +59,10 @@
                         id: song,
                         url: '/music/' + song + '.mp3',
                         onfinish: function() {
-                            console.log("Finished the song!");
+                            $('#modal1').modal('open');
                             distractionLevel.setAttribute('disabled', true);
                             pleasantnessLevel.setAttribute('disabled', true);
+                            alert("That's the end of the test! Go ahead and subnit your results")
                         }
                     });
 
@@ -108,9 +109,9 @@
                     continues to play, feel free to adjust each slider. All of your adjustments will be recorded.</p>
 
             <div class="section">
-                <h5>Is this song distracting?</h5>
+                <h5>How distracting is this song?</h5>
                 <div id="distractionLevel" class="noUiSlider"></div><br/><br/>
-                <h5>Is it pleasant?</h5>
+                <h5>How pleasant is it?</h5>
                 <div id="pleasantnessLevel" class="noUiSlider"></div>
             </div><br/>
             <div class="section center-align">
@@ -118,6 +119,16 @@
             </div>
         </div>
 
+    </div>
+
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>That's it!</h4>
+            <p>You're all done. Go ahead and hit the "submit" button.</p>
+        </div>
+        <div class="modal-footer">
+            <a class=" modal-action modal-close waves-effect waves-green btn-flat">Ok</a>
+        </div>
     </div>
 
 </body>
