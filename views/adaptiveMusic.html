@@ -15,9 +15,9 @@
     <script src="javascripts/soundmanager2-jsmin.js" type="text/javascript"></script>
     <script src="javascripts/nback.js" type="text/javascript"></script>
     <script type="text/javascript">
-        var MIN = 1, MAX = 1;
+        var MIN = 1, MAX = 1; /* Change with number of mp3 files */
         function postSuccess() {
-            window.location.replace("http://localhost:3000/thankyou");
+            //window.location.replace("http://localhost:3000/thankyou");
         }
 
         function randomSong() {
@@ -36,7 +36,6 @@
             /* Save position of the song head when user adjusts a slider */
             obj.noUiSlider.on('change', function (value, handle) {
                 vbls.push({'val': value[0], 'time': mp3.position});
-                console.log(vbls);
             });
         }
 
@@ -44,7 +43,6 @@
         $(document).ready(function(){
             /* Initialization for Materialize graphics */
             $('.modal').modal();
-            $('#modal1').modal('open');
 
             var distractionLog = [], pleasantnessLog = [];
             var distractionLevel = document.getElementById('distractionLevel');
@@ -59,10 +57,9 @@
                         id: song,
                         url: '/music/' + song + '.mp3',
                         onfinish: function() {
-                            $('#modal1').modal('open');
+                            $('#song-finished').modal('open');
                             distractionLevel.setAttribute('disabled', true);
                             pleasantnessLevel.setAttribute('disabled', true);
-                            alert("That's the end of the test! Go ahead and subnit your results")
                         }
                     });
 
@@ -74,8 +71,8 @@
                             url: 'http://localhost:3000/results',
                             data: {
                                 title: mp3.id,
-                                distractionLog: distractionLog,
-                                pleasantnessLog: pleasantnessLog
+                                distractionLog: JSON.stringify(distractionLog),
+                                pleasantnessLog: JSON.stringify(pleasantnessLog)
                             },
                             success: postSuccess(),
                             dataType: 'json'
@@ -121,7 +118,7 @@
 
     </div>
 
-    <div id="modal1" class="modal">
+    <div id="song-finished" class="modal">
         <div class="modal-content">
             <h4>That's it!</h4>
             <p>You're all done. Go ahead and hit the "submit" button.</p>

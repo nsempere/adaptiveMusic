@@ -18,8 +18,8 @@ module.exports = function(Trial) {
   router.post('/results', function (req, res, next) {
     var trial = new Trial({
       song_title: req.body.title,
-      distraction_log: req.body.distractionLog,
-      pleasantness_log: req.body.pleasantnessLog
+      distraction_log: JSON.parse(req.body.distractionLog),
+      pleasantness_log: JSON.parse(req.body.pleasantnessLog)
     });
 
     trial.save(function(err, trial){
