@@ -1,6 +1,7 @@
 
 // Define letters audio
 function NBack(){
+    var dualMode = false;
     $("#nback").hide();
     $("#nhead").hide();
     $('#begin').hide();
@@ -23,8 +24,6 @@ function NBack(){
     }
 
     // Function to light up specified square
-
-
     var sqrMaker = function(randSqr,toToggle) {
             switch(randSqr) {
                     case 1:
@@ -66,39 +65,38 @@ function NBack(){
 
     var letters = function(randLet) {
             switch(randLet) {
-                    case 1:
-                            letb.play();
-                            break;
-                    case 2:
-                            letf.play();
-                            break;
-                    case 3:
-                            letk.play();
-                            break;
-                    case 4:
-                            letn.play();
-                            break;
-                    case 5:
-                            letp.play();
-                            break;
-                    case 6:
-                            letq.play();
-                            break;
-                    case 7:
-                            letr.play();
-                            break;
-                    case 8:
-                            lett.play();
-                            break;
+                case 1:
+                        letb.play();
+                        break;
+                case 2:
+                        letf.play();
+                        break;
+                case 3:
+                        letk.play();
+                        break;
+                case 4:
+                        letn.play();
+                        break;
+                case 5:
+                        letp.play();
+                        break;
+                case 6:
+                        letq.play();
+                        break;
+                case 7:
+                        letr.play();
+                        break;
+                case 8:
+                        lett.play();
+                        break;
             }
     };
 
     // Global variable for user score
-
     var visualScores = [0, 0, 0, 0]; 
-    var audioScores = [0, 0, 0, 0]; 
     var reactionTimes = [[],[]];
     var start = 0; //.. for timing
+
     function prepareBlockSam(numBlocks) {
         var thisBlock = [];
         //.. populate with random values
@@ -110,6 +108,7 @@ function NBack(){
         thisBlock = forceMatches(numBlocks, thisBlock,1);
         return thisBlock;
     }
+
     function forceMatches(numBlocks, thisBlock, index) {
         //.. then at ~40% of locations, selected randomly make so that visual match
         var numMatches = Math.floor((numBlocks) * PCTMATCHING);
@@ -130,8 +129,7 @@ function NBack(){
             reactionTimes = [[],[]];
             visualScores = [0, 0, 0, 0];
             audioScores = [0, 0, 0, 0];
-            reactionTimes = [[], []];
-             start = 0; //.. for timing
+            start = 0; //.. for timing
             var currentBlock = prepareBlockSam(numBlocks);
             var blockEval = evaluateBlock(currentBlock);
             var numMatches = Math.floor((numBlocks) * PCTMATCHING);
@@ -238,39 +236,23 @@ function NBack(){
                            setTimeout(playValue, 3000);
                            hitsThisValue = [0, 0];
                    }
+                    
                     //.. user is done
                     else {
-                        $("#consoleInput").val("write(nback-data)");
-                        javaInterface.postToConsole(); 
                         if (visual) {
-                            consoleArea.displayMessage("Visual scores: ")
+                            console.log("Visual scores: ")
                             var corr = pctCorrect(visualScores);
                             var ave = (corr[0] / corr[1]);
                             if (corr[1] == 0) ave = 0;
 
-                            consoleArea.displayMessage("    Correct: " +  corr[0] +
+                            console.log("    Correct: " +  corr[0] +
                                     " / " + corr[1] + " = " + (corr[0] / corr[1])); 
                             var reactAve = getAverage(reactionTimes[0]);
                             
                             $("#consoleInput").val("regstat("+n +"," +ave+","+reactAve+")");
-                            javaInterface.postToConsole(); 
                             
-                            consoleArea.displayMessage("    Average reaction time = " +reactAve); 
-                            setTimeout(function () { // streamlabel(visual-1,10%1%1)
-                                var mess = "retrolabel(corr,condition," + getThreshold(ave) + ",0,realtime1)";
-
-                                $("#consoleInput").val(mess);
-                                javaInterface.postToConsole(); 
-                                
-                            }, 5000);
+                            console.log("    Average reaction time = " +reactAve); 
                             
-                            setTimeout(function () { // streamlabel(visual-1,10%1%1)
-                                var mess = "retrolabel(reaction,condition," + getNum(reactAve) + ",0,realtime1)";
-
-                                $("#consoleInput").val(mess);
-                                javaInterface.postToConsole();
-
-                            }, 5000);
                             
                         }
                         if (audio) {
@@ -398,18 +380,16 @@ function NBack(){
     var blockRunning = false;
 
     // VALUE OF N
-
     var n = 1;
     var PCTMATCHING = 0.4;
     this.appendBack = function() {
-        
-        $("#topRight").append(" <div id='nhead'>" +
-                " <h1 id='nvalue'>2</h1>" +
+        $("#nback").append(" <div id='nhead'>" +
+                " <div id='nvalue'>2</div>" +
                 "<div id='left'>left=yes</div>" +
                 "<div id='right'>right=no</div>" +
                 "</div>");
 
-        $("#topRight").append("<table  class = 'ntable' id='nback'>" +
+        $("#nback").append("<table  class = 'ntable' id='nback'>" +
                 "   <tr>" +
                 "<td class = 'ncol'><div id='uno' class='off'></div></td>" +
                 "<td class = 'ncol'><div id='dos' class='off'></div></td>" +
@@ -429,7 +409,7 @@ function NBack(){
     }
     //. streamlabel(visual-3, 10%1%1)
     this.begin = function (time, _n, audio, visual) {
-        $("#topRight").empty();
+        $("#nback").empty();
         this.appendBack();
         //$("userinput").blur();
         //$("#nback").focus();
@@ -450,12 +430,11 @@ function NBack(){
             $("#nback").hide();
             $("#nhead").hide();
         }, time-3000);
-    }
-    
+    }    
 }   
 
-// Size the grid to the window on load
 
+// Size the grid to the window on load
 document.ready = function () {
     var loadwidth = $(window).height();
     loadwidth *= 0.50;
@@ -472,18 +451,4 @@ window.onresize = function () {
     $('table').css({'height': dynwidth + 'px'});
 }
 
-// Show and hide instructions when prompted
 
-$('#info').click(function () {
-    $('#instruct').css({'display': 'block'});
-});
-
-$('#close').click(function () {
-    $('#instruct').css({'display': 'none'});
-});
-$('#begin').click(function () {
-    nback.begin(30000);
-    });
-$('#resultclose').click(function () {
-    $('#resultswindow').css({'display': 'none'});
-});
