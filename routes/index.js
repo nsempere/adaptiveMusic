@@ -7,6 +7,11 @@ module.exports = function(Trial) {
 
   /* GET home page. */
   router.get('/', function (req, res, next) {
+    res.sendFile('questionnaire.html', {'root': 'views'});
+  });
+
+  // If questionnaire is not finished, redirect to intro page
+  router.get('/test', function (req, res, next) {
     res.sendFile('adaptiveMusic.html', {'root': 'views'});
   });
 
