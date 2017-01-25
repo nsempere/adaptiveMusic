@@ -13,12 +13,13 @@ var trialSchema = mongoose.Schema({
         headphones: String,
         alone: String,
         noise_level: Number,
-        musicHabits: {
+        music_habits: {
             office: String,
             home: String,
             public: String,
             library: String
-        }
+        },
+        music_preferences: [String]
     },
     song_title: String,
     distraction_log: [{val: Number, time: Number}],

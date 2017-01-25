@@ -41,6 +41,17 @@ module.exports = function(Trial) {
    */
   router.post('/questions', function(req, res, next){
     var data = req.body;
+    console.log(data);
+
+    var musicPreferences = [];
+
+    for (var key in data) {
+      if (data[key] == 'on' && data.hasOwnProperty(key))
+        musicPreferences.push(key);
+    }
+
+    console.log(musicPreferences);
+
     var trial = new Trial({
       email: data.email,
       questions: {
@@ -50,12 +61,13 @@ module.exports = function(Trial) {
         headphones: data.headphones,
         alone: data.alone,
         noise_level: data.noiseLevel,
-        musicHabits: {
+        music_habits: {
           office: data.q1,
           home: data.q2,
           public: data.q3,
           library: data.q4
-        }
+        },
+        music_preferences: musicPreferences
       }
     });
 
