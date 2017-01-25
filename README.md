@@ -14,5 +14,5 @@ an nback task. At the same time, the user can rate the music based on how pleasa
 Each adjustment to the ratings is stored with a timestamp relative to the song that is playing.
 
 ### To Do
-1. Nback functionality
-2. Content (instructions, information, etc.)
+1. Add results from NBack test to data model
+2. Change model to store multiple trials per use
