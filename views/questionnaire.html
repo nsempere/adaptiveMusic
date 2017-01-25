@@ -10,9 +10,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
     <script type="text/javascript">
-
         $(document).ready(function(){
             $('select').material_select();
+            $('#form').submit(function(){
+                localStorage.trial_id = $('#email').val();
+                console.log(localStorage.trial_id);
+            });
         });
     </script>
 </head>
@@ -23,185 +26,186 @@
             <h6>We ask that you use headphones or ear buds to take this test. Additionally, make sure you're using
                 a laptop, desktop, or tablet before continuing.</h6>
         </div>
+        <form id="form" action="/questions" method="post">
+            <div class="section">
+                <h5>First, we'd like to ask you a few personal questions.</h5>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input name="email" id="email" type="email" class="validate" required>
+                        <label for="email">Email</label>
+                    </div>
+                </div>
 
-        <div class="section">
-            <h5>First, we'd like to ask you a few personal questions.</h5>
-            <div class="row">
-                <div class="input-field col s12 m6">
-                    <input id="email" type="text" class="validate">
-                    <label for="email">Email</label>
+                <div class="row">
+                    <div  class="input-field col s12 m6">
+                        <select name="gender" id="gender" required>
+                            <option value="" disabled selected></option>
+                            <option value="pass">Prefer not to identify</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="non-binary">Non-binary</option>
+                            <option value="non-binary">Other</option>
+                        </select>
+                        <label for="gender">With what gender do you identify?</label>
+                    </div>
+                    <div  class="input-field col s12 m6">
+                        <select name="ethnicity" id="ethnicity" required>
+                            <option value="" disabled selected></option>
+                            <option value="Black/African-American">Prefer not to identify</option>
+                            <option value="Asian">Asian</option>
+                            <option value="Pacific Islander">Pacific Islander</option>
+                            <option value="Native American">Native American</option>
+                            <option value="Hispanic/Latinx">Hispanic/Latinx</option>
+                            <option value="White (non-Hispanic)">White (non-Hispanic)</option>
+                            <option value="Arab">Arab</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <label for="ethnicity">With which racial/ethnic group do you most identify?</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input name="birthYear" id="birthYear" type="text" pattern="^19[0-9][0-7]$" class="validate" required>
+                        <label for="birthYear">In what year were you born?</label>
+                    </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div id="gender" class="input-field validate col s12 m6">
-                    <select>
-                        <option value="" disabled selected></option>
-                        <option value="pass">Prefer not to identify</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="non-binary">Non-binary</option>
-                        <option value="non-binary">Other</option>
-                    </select>
-                    <label>With what gender do you identify?</label>
-                </div>
-                <div id="ethnicity" class="input-field validate col s12 m6">
-                    <select>
-                        <option value="" disabled selected></option>
-                        <option value="Black/African-American">Prefer not to identify</option>
-                        <option value="Asian">Asian</option>
-                        <option value="Pacific Islander">Pacific Islander</option>
-                        <option value="Native American">Native American</option>
-                        <option value="Hispanic/Latinx">Hispanic/Latinx</option>
-                        <option value="White (non-Hispanic)">White (non-Hispanic)</option>
-                        <option value="Arab">Arab</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <label>With which racial/ethnic group do you most identify?</label>
-                </div>
-            </div>
+            <div class="section">
+                <h5>Describe your environment to us.</h5>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <select id="headphones" name="headphones" class="validate" required>
+                            <option value="" disabled selected></option>
+                            <option value="in-ear">In-ear</option>
+                            <option value="over-ear">Over-the-ear</option>
+                            <option value="over-ear-noise-cancelling">Over-the-ear headphones with noise-cancelling</option>
+                            <option value="non-binary">Other</option>
+                        </select>
+                        <label>What type of headphones are you using?</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <select name="alone" id="alone" class="validate" required>
+                            <option value="" disabled selected></option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                        <label>Are you alone?</label>
+                    </div>
 
-            <div class="row">
-                <div class="input-field col s12 m6">
-                    <input id="age" type="text" class="validate">
-                    <label for="age">In what year were you born?</label>
-                </div>
-            </div>
-        </div>
+                    <div class="input-field col s12 m6">
+                        <select name="noiseLevel" id="noiseLevel" class="validate" required>
+                            <option value="" disabled selected></option>
+                            <option value="1">Very quiet</option>
+                            <option value="2">Relatively quiet (some noise)</option>
+                            <option value="3">Some ambient noise (conversation, soft music)</option>
+                            <option value="4">Fairly noisy</option>
+                            <option value="5">Very noisy (crowded area, loud music)</option>
 
-        <div class="section">
-            <h5>Describe your environment to us.</h5>
-            <div class="row">
-                <div id="headphones" class="input-field validate col s12 m6">
-                    <select>
-                        <option value="" disabled selected></option>
-                        <option value="in-ear">In-ear</option>
-                        <option value="over-ear">Over-the-ear</option>
-                        <option value="over-ear-noise-cancelling">Over-the-ear headphones with noise-cancelling</option>
-                        <option value="non-binary">Other</option>
-                    </select>
-                    <label>What type of headphones are you using?</label>
-                </div>
-                <div id="alone" class="input-field validate col s12 m6">
-                    <select>
-                        <option value="" disabled selected></option>
-                        <option value="no">No</option>
-                        <option value="yes">Yes</option>
-                    </select>
-                    <label>Are you alone?</label>
+                        </select>
+                        <label>How loud is your current environment?</label>
+                    </div>
                 </div>
 
-                <div id="headphones" class="input-field validate col s12 m6">
-                    <select>
-                        <option value="" disabled selected></option>
-                        <option value="1">Very quiet</option>
-                        <option value="2">Relatively quiet (some noise)</option>
-                        <option value="3">Some ambient noise (conversation, soft music)</option>
-                        <option value="4">Fairly noisy</option>
-                        <option value="5">Very noisy (crowded area, loud music)</option>
+                <div class="row">
 
-                    </select>
-                    <label>How loud is your current environment?</label>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="section">
+                <h5>While working, how often do you listen to music at the following locations?</h5>
 
-            </div>
-        </div>
+                <div class="row">
+                    <p class="col s12 m4">Your office or workplace</p>
+                    <div class="col s12 m8">
+                        <p>
+                            <input name="q1" type="radio" id="q1-1" required />
+                            <label for="q1-1">N/A </label>
 
-        <div class="section">
-            <h5>While working, how often do you listen to music at the following locations?</h5>
+                            <input name="q1" type="radio" id="q1-2" />
+                            <label for="q1-2">Never </label>
 
-            <div class="row">
-                <p class="col s12 m4">Your office or workplace</p>
-                <div class="col s12 m8">
-                    <p>
-                        <input name="q1" type="radio" id="q1-1" />
-                        <label for="q1-1">N/A </label>
+                            <input name="q1" type="radio" id="q1-3"  />
+                            <label for="q1-3">Infrequently </label>
 
-                        <input name="q1" type="radio" id="q1-2" />
-                        <label for="q1-2">Never </label>
+                            <input name="q1" type="radio" id="q1-4"  />
+                            <label for="q1-4">Frequently </label>
 
-                        <input name="q1" type="radio" id="q1-3"  />
-                        <label for="q1-3">Infrequently </label>
+                            <input name="q1" type="radio" id="q1-5"  />
+                            <label for="q1-5">Always </label>
+                        </p>
+                    </div>
 
-                        <input name="q1" type="radio" id="q1-4"  />
-                        <label for="q1-4">Frequently </label>
-
-                        <input name="q1" type="radio" id="q1-5"  />
-                        <label for="q1-5">Always </label>
-                    </p>
                 </div>
+                <div class="row">
+                    <p class="col s12 m4">At home</p>
+                    <div class="col s12 m8">
+                        <p>
+                            <input name="q2" type="radio" id="q2-1" required />
+                            <label for="q2-1">N/A </label>
 
-            </div>
-            <div class="row">
-                <p class="col s12 m4">At home</p>
-                <div class="col s12 m8">
-                    <p>
-                        <input name="q2" type="radio" id="q2-1" />
-                        <label for="q2-1">N/A </label>
+                            <input name="q2" type="radio" id="q2-2" />
+                            <label for="q2-2">Never </label>
 
-                        <input name="q2" type="radio" id="q2-2" />
-                        <label for="q2-2">Never </label>
+                            <input name="q2" type="radio" id="q2-3"  />
+                            <label for="q2-3">Infrequently </label>
 
-                        <input name="q2" type="radio" id="q2-3"  />
-                        <label for="q2-3">Infrequently </label>
+                            <input name="q2" type="radio" id="q2-4"  />
+                            <label for="q2-4">Frequently </label>
 
-                        <input name="q2" type="radio" id="q2-4"  />
-                        <label for="q2-4">Frequently </label>
-
-                        <input name="q2" type="radio" id="q2-5"  />
-                        <label for="q2-5">Always </label>
-                    </p>
+                            <input name="q2" type="radio" id="q2-5"  />
+                            <label for="q2-5">Always </label>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <p class="col s12 m4">At a cafe or coffee shop</p>
-                <div class="col s12 m8">
-                    <p>
-                        <input name="q3" type="radio" id="q3-1" />
-                        <label for="q3-1">N/A </label>
+                <div class="row">
+                    <p class="col s12 m4">At a cafe or coffee shop</p>
+                    <div class="col s12 m8">
+                        <p>
+                            <input name="q3" type="radio" id="q3-1" required />
+                            <label for="q3-1">N/A </label>
 
-                        <input name="q3" type="radio" id="q3-2" />
-                        <label for="q3-2">Never </label>
+                            <input name="q3" type="radio" id="q3-2" />
+                            <label for="q3-2">Never </label>
 
-                        <input name="q3" type="radio" id="q3-3"  />
-                        <label for="q3-3">Infrequently </label>
+                            <input name="q3" type="radio" id="q3-3"  />
+                            <label for="q3-3">Infrequently </label>
 
-                        <input name="q3" type="radio" id="q3-4"  />
-                        <label for="q3-4">Frequently </label>
+                            <input name="q3" type="radio" id="q3-4"  />
+                            <label for="q3-4">Frequently </label>
 
-                        <input name="q3" type="radio" id="q3-5"  />
-                        <label for="q3-5">Always </label>
-                    </p>
+                            <input name="q3" type="radio" id="q3-5"  />
+                            <label for="q3-5">Always </label>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <p class="col s12 m4">At the library or a quiet study place</p>
-                <div class="col s12 m8">
-                    <p>
-                        <input name="q4" type="radio" id="q4-1" />
-                        <label for="q4-1">N/A </label>
+                <div class="row">
+                    <p class="col s12 m4">At the library or a quiet study place</p>
+                    <div class="col s12 m8">
+                        <p>
+                            <input name="q4" type="radio" id="q4-1" class="validate" required />
+                            <label for="q4-1">N/A </label>
 
-                        <input name="q4" type="radio" id="q4-2" />
-                        <label for="q4-2">Never </label>
+                            <input name="q4" type="radio" id="q4-2" />
+                            <label for="q4-2">Never </label>
 
-                        <input name="q4" type="radio" id="q4-3"  />
-                        <label for="q4-3">Infrequently </label>
+                            <input name="q4" type="radio" id="q4-3"  />
+                            <label for="q4-3">Infrequently </label>
 
-                        <input name="q4" type="radio" id="q4-4"  />
-                        <label for="q4-4">Frequently </label>
+                            <input name="q4" type="radio" id="q4-4"  />
+                            <label for="q4-4">Frequently </label>
 
-                        <input name="q4" type="radio" id="q4-5"  />
-                        <label for="q4-5">Always </label>
-                    </p>
+                            <input name="q4" type="radio" id="q4-5"  />
+                            <label for="q4-5">Always </label>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="section center-align">
-            <a id="submit" class="waves-effect waves-light btn">Continue</a>
-        </div>
+            <div class="section center-align">
+                <button id="submit" class="btn waves-effect waves-light" type="submit" >continue</button>
+            </div>
+        </form>
 
     </div>
 

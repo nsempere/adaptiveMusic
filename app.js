@@ -9,14 +9,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
 
 var debugURL = 'mongodb://localhost:27017/test';
-//mongoose.connect(debugURL);
+mongoose.connect(debugURL);
 
-//var db = mongoose.connection;
-//db.on('error', console.error.bind(console, 'connection error:'));
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 var Trial = require('./models/trials');
 var routes = require('./routes/index')(Trial);

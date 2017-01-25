@@ -1,16 +1,16 @@
 var express = require('express');
+var url = require('url');
 
 module.exports = function(Trial) {
 
   var router = express.Router();
-  var files = ['Lorn']; /* todo: make this dynamic */
 
   /* GET home page. */
-  router.get('/', function (req, res, next) {
+  router.get('/pretest', function (req, res, next) {
     res.sendFile('questionnaire.html', {'root': 'views'});
   });
 
-  // If questionnaire is not finished, redirect to intro page
+  // todo: If questionnaire is not finished, redirect to intro page
   router.get('/test', function (req, res, next) {
     res.sendFile('adaptiveMusic.html', {'root': 'views'});
   });
@@ -21,24 +21,44 @@ module.exports = function(Trial) {
 
   /* Post results of a trial to database */
   router.post('/results', function (req, res, next) {
+    console.log(req.body.trial_id);
+    Trial.findOne({email: JSON.parse(req.body.trial_id)}).
+        exec(function(err, trial){
+          //todo: update trial with test data
+    });
+  });
+
+  /* Create a new trial object and store questionnaire data.
+     Test data will be stored later.
+     */
+  router.post('/questions', function(req, res, next){
+    var data = req.body;
     var trial = new Trial({
-      song_title: req.body.title,
-      distraction_log: JSON.parse(req.body.distractionLog),
-      pleasantness_log: JSON.parse(req.body.pleasantnessLog)
+      email: data.email,
+      questions: {
+        gender: data.gender,
+        age: data.birthYear,
+        race: data.ethnicity,
+        headphones: data.headphones,
+        alone: data.alone,
+        noise_level: data.noiseLevel,
+        musicHabits: {
+          office: data.q1,
+          home: data.q2,
+          public: data.q3,
+          library: data.q4
+        }
+      }
     });
 
     trial.save(function(err, trial){
       if (err)
         console.log("something went wrong here.");
-      else
-        console.log("success!");
+      else {
+        console.log("new trial created successfully!");
+        res.redirect('/test');
+      }
     });
-  });
-
-  /* Request a song (randomized) */
-  router.get('/song', function (req, res, next) {
-    var mp3 = files[0]; /* Randomize this when more mp3 files come into play */
-    res.sendFile('music/' + mp3 + '.mp3', {'root': 'public'});
   });
 
   return router;

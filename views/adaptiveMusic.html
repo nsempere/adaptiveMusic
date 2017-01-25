@@ -73,6 +73,7 @@
                             type: 'POST',
                             url: 'http://localhost:3000/results',
                             data: {
+                                trial_id: JSON.stringify(localStorage.trial_id),
                                 title: mp3.id,
                                 distractionLog: JSON.stringify(distractionLog),
                                 pleasantnessLog: JSON.stringify(pleasantnessLog)
