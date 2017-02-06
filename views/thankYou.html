@@ -4,13 +4,23 @@
     <meta charset="UTF-8">
     <title>Thanks You!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+           $('#submit').click(function(){
+               window.location.replace('http://localhost:3000/test');
+           });
+        });
+    </script>
 </head>
 <body>
 <div class="center-align">
     <div class="">
         <h2>Thanks!</h2>
-        <h5> Your results have been saved</h5>
+        <h5> Your results have been saved.</h5>
+    </div>
+    <div class="section center-align">
+        <a id="submit" class="waves-effect waves-light btn">Take another test</a>
     </div>
 </div>
 </body>

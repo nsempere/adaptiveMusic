@@ -1,7 +1,8 @@
 var express = require('express');
 var url = require('url');
+var crypto = require('crypto');
 
-module.exports = function(Trial) {
+module.exports = function(Profile, Trial) {
 
   var router = express.Router();
 
@@ -22,42 +23,44 @@ module.exports = function(Trial) {
 
   /* Post results of a trial to database */
   router.post('/results', function (req, res, next) {
-    console.log(req.body.trial_id);
-    Trial.findOne({email: JSON.parse(req.body.trial_id)}).
-        exec(function(err, trial){
-          trial.update({
-            song_title: JSON.parse(req.body.title),
-            distraction_log: JSON.parse(req.body.distractionLog),
-            pleasantness_log: JSON.parse(req.body.pleasantnessLog)
-          }, function(){
-            console.log("test data updated successfully!");
-          });
+    console.log(JSON.parse(req.body.profile_id));
+    var trial = new Trial({
+      profile_id: JSON.parse(req.body.profile_id),
+      song_title: JSON.parse(req.body.title),
+      distraction_log: JSON.parse(req.body.distractionLog),
+      pleasantness_log: JSON.parse(req.body.pleasantnessLog)
+    });
+
+    trial.save(function(err, trial){
+      if (err)
+        console.log("something went wrong here.");
+      else {
+        console.log("new trial created successfully!");
+      }
     });
   });
 
   /*
-   * Create a new trial object and store questionnaire data.
-   * Test data will be stored later.
+   * Create a new trial object and ID, and store questionnaire data. Responds with
+   * the ID of the new trial. Test data will be stored later.
    */
   router.post('/questions', function(req, res, next){
     var data = req.body;
-    console.log(data);
-
-    var musicPreferences = [];
+    var musicPreferences = [], date = new Date();
+    var id = crypto.createHash('sha1').update(date.valueOf().toString()).digest('hex');
 
     for (var key in data) {
       if (data[key] == 'on' && data.hasOwnProperty(key))
         musicPreferences.push(key);
     }
 
-    console.log(musicPreferences);
-
-    var trial = new Trial({
-      email: data.email,
+    var profile = new Profile({
+      id: id,
       questions: {
         gender: data.gender,
         age: data.birthYear,
         race: data.ethnicity,
+        country: data.countryCode,
         headphones: data.headphones,
         alone: data.alone,
         noise_level: data.noiseLevel,
@@ -71,12 +74,13 @@ module.exports = function(Trial) {
       }
     });
 
-    trial.save(function(err, trial){
-      if (err)
+    profile.save(function(err, profile){
+      if (err) {
         console.log("something went wrong here.");
-      else {
-        console.log("new trial created successfully!");
-        res.redirect('/test');
+        res.send(JSON.stringify({id: 'null'}));
+      } else {
+        console.log("new profile created successfully!");
+        res.send(JSON.stringify({id: id}));
       }
     });
   });

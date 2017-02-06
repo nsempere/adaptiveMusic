@@ -18,12 +18,12 @@ mongoose.connect(debugURL);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
+var Profile = require('./models/profiles');
 var Trial = require('./models/trials');
-var routes = require('./routes/index')(Trial);
-var users = require('./routes/users');
+var routes = require('./routes/index')(Profile, Trial);
 var app = express();
 
-// view engine setup
+
 app.set('views', path.join(__dirname, 'views')); //Set path for html views
 
 // uncomment after placing your favicon in /public
@@ -37,9 +37,6 @@ app.use(express.static(path.join(__dirname, 'public'))); //Set path for all asse
 
 
 app.use('/', routes);
-app.use('/users', users); //todo: probably don't need this
-
-
 
 /*
  * If no other routes match, 404
