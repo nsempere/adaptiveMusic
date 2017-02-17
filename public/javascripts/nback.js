@@ -93,7 +93,7 @@ function NBack(){
     };
 
     // Global variable for user score
-    var visualScores = [0, 0, 0, 0]; 
+    var visualScores = [0, 0, 0, 0];
     var reactionTimes = [[],[]];
     var start = 0; //.. for timing
 
@@ -125,31 +125,42 @@ function NBack(){
         return thisBlock;
     }
 
-    function playBlock(numBlocks, audio, visual) {
-            reactionTimes = [[],[]];
-            visualScores = [0, 0, 0, 0];
-            audioScores = [0, 0, 0, 0];
-            start = 0; //.. for timing
-            var currentBlock = prepareBlockSam(numBlocks);
-            var blockEval = evaluateBlock(currentBlock);
-            var numMatches = Math.floor((numBlocks) * PCTMATCHING);
+    function pctCorrect(arr) {
+        var total = arr[0] + arr[1] + arr[2] +arr[3];
+        var correct = arr[0] + arr[2];
+        return [correct, total];
+    }
 
-            var index =0;
-            while(blockEval[0] != numMatches && blockEval[1] != numMatches) { 
+    function getAverage(arr) {
+        var sum = arr.reduce(function(a,b){
+            return a+b;
+        }, 0);
+        return sum / arr.length;
+    }
+
+    function playBlock(numBlocks, audio, visual) {
+        reactionTimes = [[],[]];
+        visualScores = [0, 0, 0, 0];
+        audioScores = [0, 0, 0, 0];
+        start = 0; //.. for timing
+        var currentBlock = prepareBlockSam(numBlocks);
+        var blockEval = evaluateBlock(currentBlock);
+        var numMatches = Math.floor((numBlocks) * PCTMATCHING);
+
+        var index =0;
+        while(blockEval[0] != numMatches && blockEval[1] != numMatches) {
                 currentBlock = prepareBlockSam(numBlocks);
                 blockEval = evaluateBlock(currentBlock);
                 index++;
                 if (index > 2) break;
             }
-            
-            var blockCounter = -1;
-            var thisBlockLength = currentBlock.length;
-            var hitsThisValue = [0, 0];
-            playValue();
-            var justPressed = false;
 
-            
-            function playValue() {
+        var blockCounter = -1;
+        var thisBlockLength = currentBlock.length;
+        var hitsThisValue = [0, 0];
+        var justPressed = false;
+
+        function playValue() {
                     $("#nback").css("border-style", "solid");
                     $("#nback").css("border-color", "black");
                     $("#nback").css("border-width", "5px");
@@ -162,16 +173,12 @@ function NBack(){
                             if (currentBlock[position][0] == currentBlock[checkPosition][0]) {
                                 $("#nback").css("border-style", "dashed");
                                 visualScores[3] += 1; 
-                            }
-
-                            //.. right
-                            else {
-                                if (dualMode)
-                                    visualScores[2] += 1; 
-                                else  {
+                            } else {
+                                if (dualMode){
+                                    visualScores[2] += 1;
+                                } else {
                                     //$("#nback").css("border-color", "red");
                                     $("#nback").css("border-style", "dashed");
-
                                     visualScores[3] += 1; 
                                 }
                             }
@@ -179,10 +186,7 @@ function NBack(){
                         if (audio) {
                             if (currentBlock[position][0] == currentBlock[checkPosition-1][0]) {
                                 audioScores[3] += 1; 
-                            }
-
-                            //.. right
-                            else {
+                            } else {
                                 audioScores[2] += 1; 
                             }                                
                         }
@@ -198,14 +202,12 @@ function NBack(){
                                      justPressed = true;
                                      checkAccuracy("visual");
                                  }
-
                             } else if( audio && event.which == 39) {
                                 hitsThisValue[1] = 1;
                                 if (!(justPressed)){
                                     justPressed = true;
                                     checkAccuracy("audio");
                                 }
-
                             }
                         }
                         else { //. otherwise audio 
@@ -215,15 +217,12 @@ function NBack(){
                                      justPressed = true;
                                      checkAccuracyTDCS("yes");
                                  }
-
-                            }
-                            else if(event.which == 39) {
+                            } else if(event.which == 39) {
                                 hitsThisValue[1] = 1;
                                 if (!(justPressed)){
                                     justPressed = true;
                                     checkAccuracyTDCS("no");
                                 }
-
                             }
                         }
                     });
@@ -236,24 +235,22 @@ function NBack(){
                            setTimeout(playValue, 3000);
                            hitsThisValue = [0, 0];
                    }
-                    
                     //.. user is done
                     else {
                         if (visual) {
-                            console.log("Visual scores: ")
+                            console.log("Visual scores: ");
                             var corr = pctCorrect(visualScores);
                             var ave = (corr[0] / corr[1]);
                             if (corr[1] == 0) ave = 0;
 
-                            console.log("    Correct: " +  corr[0] +
-                                    " / " + corr[1] + " = " + (corr[0] / corr[1])); 
+                            var ratio = (corr[0] / corr[1]);
                             var reactAve = getAverage(reactionTimes[0]);
-                            
-                            $("#consoleInput").val("regstat("+n +"," +ave+","+reactAve+")");
-                            
-                            console.log("    Average reaction time = " +reactAve); 
-                            
-                            
+
+                            console.log("    Correct: " +  corr[0] + " / " + corr[1] + " = " + ratio);
+                            $("#consoleInput").val("regstat("+ n +"," + ave +","+ reactAve +")");
+                            console.log("    Average reaction time = " + reactAve);
+
+                            return [ratio, reactAve];
                         }
                         if (audio) {
                             consoleArea.displayMessage("Audio scores: ")
@@ -267,15 +264,14 @@ function NBack(){
                         reactionTimes = [];
                     }
                 }
-                
-                //.. given a number return a string
-                function getThreshold(num) {
+        //.. given a number return a string
+        function getThreshold(num) {
                     if (num <=1) {
                         var nums = ["zero","ten", "twenty", "thirty", "forty","fifty","sixty","seventy","eighty","ninety","hundred"];
                         return nums[Math.floor(num*10)];
                     }
                 }
-                function getNum(num) {
+        function getNum(num) {
                     numStr = Math.floor(num) +"";
                     var nums = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "hundred"];
                     var retStr = "";
@@ -284,8 +280,8 @@ function NBack(){
                     }
                     return retStr;
                 }
-                //.. set as wrong if 
-                function checkAccuracyTDCS(ans) {
+        //.. set as wrong if
+        function checkAccuracyTDCS(ans) {
                     $("#nback").css("border-style", "solid");
                     var elapsed = Date.now() - start;
                     var position = blockCounter;
@@ -300,7 +296,7 @@ function NBack(){
                             $("#nback").css("border-color", "green");
                             visualScores[0] += 1;
                         }
-                        else {
+                         else {
                             $("#nback").css("border-color", "red");
                             visualScores[1] += 1;
                         }
@@ -318,8 +314,7 @@ function NBack(){
                         }
                     }
                 }
-
-                function checkAccuracy(hit) {
+        function checkAccuracy(hit) {
                         $("#nback").css("border-style", "solid");
                         var elapsed = Date.now() -start;
                         var position = blockCounter;
@@ -350,30 +345,14 @@ function NBack(){
                         
                        
                    }
-                   
-                /** Compute percent correct from following array
-                 * true positivies, true negatives, false positives, false negatives
-                 * so 0 and 3, contribute to correct
-                 * 1 and 2 contribute to false
-                 **/
-                function pctCorrect(arr) {
-                    var total = arr[0] + arr[1] + arr[2] +arr[3];
-                    var correct = arr[0] + arr[2];
-                    return [correct, total]; 
-                }
-                function getAverage(arr) {
-                    var sum =arr.reduce(add, 0);
-                    function add(a, b) {
-                        return a + b;
-                    }
-                    return sum / arr.length;
-                }
-               }
+
+        return playValue();
+    }
      
     //.. [viz-true-positives, audio-false-positives
     this.displayScore = function() {
         
-    }
+    };
     
     // When the button is clicked, run a block
 
@@ -408,28 +387,32 @@ function NBack(){
                 "</table> ");
     }
     //. streamlabel(visual-3, 10%1%1)
-    this.begin = function (time, _n, audio, visual) {
+    this.begin = function (time, _n, audio, visual, cb) {
         $("#nback").empty();
         this.appendBack();
         //$("userinput").blur();
         //$("#nback").focus();
 
         n = _n;
+        var ratio, avg;
         $("#nvalue").text("n = " + n);
-
         var numBlocks =  (time / 3000) - n;
-        if (blockRunning === false) {
+        if (blockRunning === false)
             playBlock(numBlocks, audio, visual);
-        }
-        
+
         console.log("now running: " + numBlocks + "at  n = " + n + " for " + time);
         
         blockRunning = true;
-        setTimeout(function () {  
+        setTimeout(function () {
             blockRunning = false;
             $("#nback").hide();
             $("#nhead").hide();
+            var corr = pctCorrect(visualScores);
+            ratio = (corr[0] / corr[1]);
+            avg = getAverage(reactionTimes[0]);
+            cb(ratio, avg); //callback function
         }, time-3000);
+
     }    
 }   
 

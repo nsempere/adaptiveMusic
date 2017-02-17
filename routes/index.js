@@ -7,11 +7,14 @@ module.exports = function(Profile, Trial) {
   var router = express.Router();
 
   /* GET home page. */
+  router.get('/', function (req, res, next) {
+    res.sendFile('consent.html', {'root': 'views'});
+  });
+
   router.get('/pretest', function (req, res, next) {
     res.sendFile('questionnaire.html', {'root': 'views'});
   });
 
-  // todo: If questionnaire is not finished, redirect to intro page
   router.get('/test', function (req, res, next) {
     res.sendFile('adaptiveMusic.html', {'root': 'views'});
   });
@@ -23,10 +26,12 @@ module.exports = function(Profile, Trial) {
 
   /* Post results of a trial to database */
   router.post('/results', function (req, res, next) {
-    console.log(JSON.parse(req.body.profile_id));
+    var profile_id = req.cookies.profile_id;
     var trial = new Trial({
-      profile_id: JSON.parse(req.body.profile_id),
-      song_title: JSON.parse(req.body.title),
+      profile_id: profile_id,
+      song_title: req.body.title,
+      accuracy: req.body.accuracy,
+      avg_response_time: req.body.avgResponseTime,
       distraction_log: JSON.parse(req.body.distractionLog),
       pleasantness_log: JSON.parse(req.body.pleasantnessLog)
     });
@@ -41,8 +46,8 @@ module.exports = function(Profile, Trial) {
   });
 
   /*
-   * Create a new trial object and ID, and store questionnaire data. Responds with
-   * the ID of the new trial. Test data will be stored later.
+   * Create a new trial object and ID, and store questionnaire data. ID is
+   * set as a cookie. Test data will be stored later.
    */
   router.post('/questions', function(req, res, next){
     var data = req.body;
@@ -58,7 +63,7 @@ module.exports = function(Profile, Trial) {
       id: id,
       questions: {
         gender: data.gender,
-        age: data.birthYear,
+        yob: data.birthYear,
         race: data.ethnicity,
         country: data.countryCode,
         headphones: data.headphones,
@@ -74,13 +79,13 @@ module.exports = function(Profile, Trial) {
       }
     });
 
+    res.cookie('profile_id', id, { maxAge: 900000, httpOnly: true });
+
     profile.save(function(err, profile){
       if (err) {
         console.log("something went wrong here.");
-        res.send(JSON.stringify({id: 'null'}));
       } else {
         console.log("new profile created successfully!");
-        res.send(JSON.stringify({id: id}));
       }
     });
   });

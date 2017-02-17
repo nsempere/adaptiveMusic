@@ -48,6 +48,7 @@
             $('.modal').modal();
 
             var distractionLog = [], pleasantnessLog = [];
+            var nbackRatio, nbackAvg;
             var distractionLevel = document.getElementById('distractionLevel');
             var pleasantnessLevel = document.getElementById('pleasantnessLevel');
 
@@ -69,13 +70,13 @@
                     initSlider(distractionLevel, distractionLog, mp3); // Initialize sliders for self-reporting
                     initSlider(pleasantnessLevel, pleasantnessLog, mp3);
                     $('#submit').click(function() {
-                        console.log(localStorage.profile_id);
                         $.ajax({
                             type: 'POST',
                             url: 'http://localhost:3000/results',
                             data: {
-                                profile_id: JSON.stringify(localStorage.profile_id),
                                 title: mp3.id,
+                                accuracy: nbackRatio,
+                                avgResponseTime: nbackAvg,
                                 distractionLog: JSON.stringify(distractionLog),
                                 pleasantnessLog: JSON.stringify(pleasantnessLog)
                             },
@@ -97,9 +98,12 @@
                 $('#instruct').css({'display': 'none'});
             });
             $('#begin').click(function () {
-                console.log("beginning");
-                nb.begin(30000, 1, false, true);
+                nb.begin(40000, 1, false, true, function(ratio, avg) {
+                    nbackRatio = ratio;
+                    nbackAvg = avg;
                 });
+
+            });
             $('#resultclose').click(function () {
                 $('#resultswindow').css({'display': 'none'});
             });
@@ -112,12 +116,12 @@
         <div class="col s6">
             <h3>N-Back Test</h3>
             <div class="section">
-                <div id="nback">
-                    <button id="begin">Begin</button>
+                <div id="nback" class="section">
+                    <a id="begin" class="waves-effect waves-light btn">Begin</a>
                 </div>
 
-                <div id ="report"> 
-                    
+                <div id ="report">
+
                 </div>
             </div>
         </div>

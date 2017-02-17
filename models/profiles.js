@@ -9,7 +9,7 @@ var profileSchema = mongoose.Schema({
     read_and_agreed: Boolean,
     questions: {
         gender: String,
-        age: String,
+        yob: String,
         race: String,
         country: String,
         headphones: String,

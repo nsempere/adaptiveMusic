@@ -35,6 +35,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))); //Set path for all assets
 
+/*
+ * Only allow users to get to test pages if they have a cookie initialized,
+ * a.k.a. if they've filled out a questionnaire.
+ */
+app.use('*', function(req, res, next){
+  if (req.cookies.profile_id === undefined){
+    if (req.originalUrl == '/pretest' || req.originalUrl == '/' || req.originalUrl == '/questions') next();
+    else res.redirect('/pretest');
+  }
+  else
+    next();
+});
 
 app.use('/', routes);
 
