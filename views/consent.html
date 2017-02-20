@@ -3,10 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Consent</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#submit').click(function(){
+                window.location.replace('http://localhost:3000/pretest');
+            });
+        });
+    </script>
+
 </head>
 <body>
     <div class="container">
-        <img src="/images/consent-form.png" />
+        <div class="section ">
+            <h3 class="center-align">  Informed Consent Agreement</h3>
+
+            <p>Please consider this information carefully before deciding whether to participate in this research.</p>
+            <p><b>Purpose of Research - </b>We are doing research to understand the effect of music on cognition.</p>
+            <p><b> What you will do in this study - </b>If you decide to participate, you will first be asked to complete a
+                brief questionnaire regarding basic demographic information and musical preferences. Once you are finished,
+                the website will redirect you to a page that explains a cognitive task. Once you understand how to perform
+                this task, the website will play music into your headphones as you perform the task.</p>
+            <p><b> Time Required - </b>The session will take approximately 20-40 minutes to complete.</p>
+            <p><b>Risks and Discomfort - </b>While most people find the procedures listed above painless, some report that
+                there is a bit of discomfort associated with paying attention for extended amounts of time. You may
+                refuse to answer any questions or perform any tasks that make you feel uncomfortable at any point during
+                the study. </p>
+            <p><b>Compensation - </b> You will receive $0.25/15 minutes via the Amazon Payment System.</p>
+            <p><b> Benefits - </b> There are no direct benefits to you aside from the educational experience of participating in
+                the study. However, we expect that the results of this study will add to the body of knowledge on how
+                to design music that facilitates work.</p>
+            <p> <b>Confidentiality - </b> Your responses will be recorded. No identifying features (name, face, etc) will be
+                present in the recorded data. This information will be kept strictly confidential and used only for
+                research purposes. The documentation will be identifiable only by a randomly assigned ID number. When
+                research results are reported, responses will be aggregated and described in summary. </p>
+            <p> <b>Participation and Withdrawal - </b>Your participation is completely voluntary. Should you decide at any time
+                during the study that you no longer wish to participate, you may discontinue your participation.</p>
+            <p><b>To Contact the Researcher - </b>If you have questions or concerns about this research, please contact the
+                principal investigator: Robert Jacob. Human-Computer Interaction Laboratory; 161 College Avenue,
+                Medford MA 02155; email: jacob@cs.tufts.edu phone: 617-627-2225.</p>
+            <p><b>Whom to contact about your rights in this research, for questions, concerns, suggestions, or complaints
+                that are not being addressed by the researcher, or research-related harm - </b> Lara N. Sloboda at the
+                Office of the Institutional Review Board by email at lara.sloboda@tufts.edu  by phone at 617 627 3417.</p>
+            <p>By clicking “I agree” below you are indicating that you are at least 18 years old, have read and understood
+                this consent form and agree to participate in this research study.  Please print a copy
+                of this page for your records.</p>
+        </div>
+    </div>
+    <div class="section center-align">
+        <button id="submit" class="btn waves-effect waves-light" type="submit" >I Agree</button>
     </div>
 
 </body>

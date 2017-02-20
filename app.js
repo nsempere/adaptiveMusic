@@ -40,12 +40,14 @@ app.use(express.static(path.join(__dirname, 'public'))); //Set path for all asse
  * a.k.a. if they've filled out a questionnaire.
  */
 app.use('*', function(req, res, next){
+  console.log(req.cookies.profile_id);
   if (req.cookies.profile_id === undefined){
-    if (req.originalUrl == '/pretest' || req.originalUrl == '/' || req.originalUrl == '/questions') next();
-    else res.redirect('/pretest');
+    if (req.originalUrl == '/' || req.originalUrl == '/questions') next();
+    else res.redirect('/');
   }
-  else
+  else {
     next();
+  }
 });
 
 app.use('/', routes);

@@ -196,13 +196,13 @@ function NBack(){
                     $('html').on('keydown', function(event) {
                         //.. in a dual nback left is audio, right is visual
                         if (dualMode) {
-                            if(event.which == 37) {
+                            if(event.which == 39) {
                                 hitsThisValue[0] = 1;
                                 if (visual &&!(justPressed)) {
                                      justPressed = true;
                                      checkAccuracy("visual");
                                  }
-                            } else if( audio && event.which == 39) {
+                            } else if( audio && event.which == 37) {
                                 hitsThisValue[1] = 1;
                                 if (!(justPressed)){
                                     justPressed = true;
@@ -211,13 +211,13 @@ function NBack(){
                             }
                         }
                         else { //. otherwise audio 
-                             if(event.which == 37) { //.. yes
+                             if(event.which == 39) { //.. yes
                                 hitsThisValue[0] = 1;
                                 if (visual &&!(justPressed)) {
                                      justPressed = true;
                                      checkAccuracyTDCS("yes");
                                  }
-                            } else if(event.which == 39) {
+                            } else if(event.which == 37) {
                                 hitsThisValue[1] = 1;
                                 if (!(justPressed)){
                                     justPressed = true;
@@ -253,7 +253,7 @@ function NBack(){
                             return [ratio, reactAve];
                         }
                         if (audio) {
-                            consoleArea.displayMessage("Audio scores: ")
+                            consoleArea.displayMessage("Audio scores: ");
                             var corr = pctCorrect(audioScores);
                             consoleArea.displayMessage("    Correct: " + corr[0] +
                                     " / " + corr[1] + " = " + (corr[0] / corr[1]));
@@ -364,8 +364,8 @@ function NBack(){
     this.appendBack = function() {
         $("#nback").append(" <div id='nhead'>" +
                 " <div id='nvalue'>2</div>" +
-                "<div id='left'>left=yes</div>" +
-                "<div id='right'>right=no</div>" +
+                "<div id='left'>left=no</div>" +
+                "<div id='right'>right=yes</div>" +
                 "</div>");
 
         $("#nback").append("<table  class = 'ntable' id='nback'>" +
