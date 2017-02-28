@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var trialSchema = mongoose.Schema({
     profile_id: String,
     song_title: String,
+    n_back_task: Number,
     accuracy: Number,
     avg_response_time: Number,
     distraction_log: [{val: Number, time: Number}],

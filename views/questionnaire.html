@@ -12,8 +12,7 @@
 
     <script type="text/javascript">
         function success() {
-            console.log("ok, we're here");
-            window.location.replace("http://localhost:3000/test");
+            window.location.replace("http://localhost:3000/instructions");
         }
 
         $(document).ready(function(){
@@ -40,7 +39,7 @@
                 <h5>First, we'd like to ask you a few personal questions.</h5>
                 <div class="row">
                     <div class="input-field col s12 m6">
-                        <input name="birthYear" id="birthYear" type="text" pattern="^19[0-9][0-7]$" class="validate" required>
+                        <input name="birthYear" id="birthYear" type="text" pattern="^19([0-8][0-9]|9[0-7])$" class="validate" required>
                         <label for="birthYear">In what year were you born?</label>
                     </div>
                     <div  class="input-field col s12 m6">

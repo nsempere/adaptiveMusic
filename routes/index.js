@@ -14,13 +14,39 @@ module.exports = function(Profile, Trial) {
     res.sendFile('consent.html', {'root': 'views'});
   });
 
+  router.post('/soundCheck', function(req, res, next) {
+    var data = req.body;
+    var sound_check = (data.q1 == 'right' && data.q2 == 'both' && data.q3 == 'left');
+    console.log(sound_check);
+    res.cookie('sound_check', sound_check, { maxAge: 900000, httpOnly: true });
+    res.status(200).send(sound_check);
+  });
+
+  router.get('/soundCheck', function (req, res, next) {
+    res.sendFile('soundCheck.html', {'root': 'views'});
+  });
+
+
+
+
   router.get('/pretest', function (req, res, next) {
     res.sendFile('questionnaire.html', {'root': 'views'});
   });
 
+
+  router.get('/instructions', function (req, res, next) {
+    res.sendFile('instructions.html', {'root': 'views'});
+  });
+
+
   router.get('/test', function (req, res, next) {
+    if (req.cookies.trial === undefined)
+      res.cookie('trial', 1, { maxAge: 900000, httpOnly: false });
+    else
+      res.cookie('trial', parseInt(req.cookies.trial) + 1, { maxAge: 900000, httpOnly: false });
     res.sendFile('adaptiveMusic.html', {'root': 'views'});
   });
+
 
   router.get('/thankyou', function (req, res, next) {
     res.sendFile('thankYou.html', {'root': 'views'});
@@ -37,6 +63,9 @@ module.exports = function(Profile, Trial) {
     if (req.cookies.profile_id === undefined){
       res.status(400).send('Request needs a profile ID');
     }
+    if (req.cookies.sound_check === undefined){
+      res.status(400).send('Incomplete request. No sound-check results provided');
+    }
 
     for (var key in data) {
       if (data[key] == 'on' && data.hasOwnProperty(key))
@@ -45,6 +74,7 @@ module.exports = function(Profile, Trial) {
 
     var profile = new Profile({
       id: req.cookies.profile_id,
+      sound_check_passed: req.cookies.sound_check,
       gender: data.gender,
       yob: data.birthYear,
       race: data.ethnicity,
@@ -63,7 +93,7 @@ module.exports = function(Profile, Trial) {
 
     profile.save(function(err, profile){
       if (err) {
-        console.log("something went wrong here.");
+        console.log(err);
         res.status(500).end();
       } else {
         console.log("new profile created successfully!");
@@ -78,11 +108,18 @@ module.exports = function(Profile, Trial) {
     if (req.cookies.profile_id === undefined){
       res.status(400).send('Request needs a profile ID');
     }
+    else if (req.cookies.trial === undefined){
+      res.status(400).send('No trial information was given');
+    }
     else {
       var profile_id = req.cookies.profile_id;
+      var nbackTask;
+      parseInt(req.cookies.trial) < 3 ? nbackTask = 1 : nbackTask = 2;
+
       var trial = new Trial({
         profile_id: profile_id,
         song_title: req.body.title,
+        n_back_task: nbackTask,
         accuracy: req.body.accuracy,
         avg_response_time: req.body.avgResponseTime,
         distraction_log: JSON.parse(req.body.distractionLog),
@@ -91,7 +128,7 @@ module.exports = function(Profile, Trial) {
 
       trial.save(function(err, trial){
         if (err)
-          console.log("something went wrong here.");
+          console.log(err);
         else {
           console.log("new trial created successfully!");
         }

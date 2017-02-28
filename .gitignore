@@ -1,2 +1,5 @@
 # Files to ignore #
 .idea
+.env
+.aws/*
+node_modules

@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 /* times are stored in milliseconds. */
 var profileSchema = mongoose.Schema({
     id: String,
-    read_and_agreed: Boolean,
+    sound_check_passed: Boolean,
     gender: String,
     yob: String,
     race: String,

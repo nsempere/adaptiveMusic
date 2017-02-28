@@ -18,14 +18,44 @@
 
     <script type="text/javascript">
         var nb = new NBack();
+
         var MIN = 1, MAX = 10; /* Change with number of mp3 files */
 
+        function getCookieValue(cookieName) {
+            var cookieArray = decodeURIComponent(document.cookie).split(';');
+            for (var i = 0; i < cookieArray.length; i++) {
+                var c = cookieArray[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(cookieName + "=") == 0) {
+                    return c.substring((cookieName + "=").length, c.length);
+                }
+            }
+            return "";
+        }
+
+        /* If on 4th trial, finish the test. otherwise, do another trial */
         function postSuccess() {
-            window.location.replace("http://localhost:3000/thankyou");
+            if (parseInt(getCookieValue('trial')) == 4)
+                window.location.replace("http://localhost:3000/thankyou");
+            else
+                window.location.replace("http://localhost:3000/test");
         }
 
         function randomSong() {
             return Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
+        }
+
+        /* Start the nback task with a specified value of n (one-back or two-back). Get
+         * performance data when finished.
+         */
+        function startNBackTask(nb, taskNumber, nbRatio, nbAvg) {
+            $("#task-name").replaceWith('<h3>' + taskNumber + '-Back Task </h3>');
+            nb.begin(40000, taskNumber, false, true, function(ratio, avg) {
+                nbRatio = ratio;
+                nbAvg = avg;
+            });
         }
 
         /* Load the two sliders */
@@ -48,7 +78,7 @@
             $('.modal').modal();
 
             var distractionLog = [], pleasantnessLog = [];
-            var nbackRatio, nbackAvg;
+            var nbRatio, nbAvg;
             var distractionLevel = document.getElementById('distractionLevel');
             var pleasantnessLevel = document.getElementById('pleasantnessLevel');
 
@@ -69,14 +99,15 @@
 
                     initSlider(distractionLevel, distractionLog, mp3); // Initialize sliders for self-reporting
                     initSlider(pleasantnessLevel, pleasantnessLog, mp3);
+
                     $('#submit').click(function() {
                         $.ajax({
                             type: 'POST',
                             url: 'http://localhost:3000/results',
                             data: {
                                 title: mp3.id,
-                                accuracy: nbackRatio,
-                                avgResponseTime: nbackAvg,
+                                accuracy: nbRatio,
+                                avgResponseTime: nbAvg,
                                 distractionLog: JSON.stringify(distractionLog),
                                 pleasantnessLog: JSON.stringify(pleasantnessLog)
                             },
@@ -84,7 +115,6 @@
                             dataType: 'json'
                         });
                     });
-
                     mp3.play();
                 }
             });
@@ -97,13 +127,12 @@
             $('#close').click(function () {
                 $('#instruct').css({'display': 'none'});
             });
-            $('#begin').click(function () {
-                nb.begin(40000, 1, false, true, function(ratio, avg) {
-                    nbackRatio = ratio;
-                    nbackAvg = avg;
-                });
 
+            $('#begin').click(function () {
+                var trialNumber = parseInt(getCookieValue('trial'));
+                (trialNumber < 3) ? startNBackTask(nb, 1, nbRatio, nbAvg) : startNBackTask(nb, 2, nbRatio, nbAvg);
             });
+
             $('#resultclose').click(function () {
                 $('#resultswindow').css({'display': 'none'});
             });
@@ -114,7 +143,7 @@
 <body class="container">
     <div class="row">
         <div class="col s6">
-            <h3>N-Back Test</h3>
+            <h3 id="task-name">N-Back Test</h3>
             <div class="section">
                 <div id="nback" class="section">
                     <a id="begin" class="waves-effect waves-light btn">Begin</a>
@@ -128,9 +157,9 @@
         <div class="col s6">
             <h3 class="black-text">Self-Reporting</h3>
                 <p class="black-text">Use this section to report your opinion on the music that is playing. Each sliding
-                    bar is set on a scale from 0 on the left to 100 on the right. Higher values indicate stronger opinions.
+                    bar is set on a scale from 0 to 100. Higher values indicate strong agreement.
                     For instance, if you find the song very distracting, move the slider to the right. As the song
-                    continues to play, feel free to adjust each slider. All of your adjustments will be recorded.</p>
+                    continues to play, feel free to adjust each slider. Each adjustment will be recorded.</p>
 
             <div class="section">
                 <h5>How distracting is this song?</h5>
@@ -139,7 +168,7 @@
                 <div id="pleasantnessLevel" class="noUiSlider"></div>
             </div><br/>
             <div class="section center-align">
-                <a id="submit" class="waves-effect waves-light btn">Submit your results!</a>
+                <a id="submit" class="waves-effect waves-light btn">Submit and continue</a>
             </div>
         </div>
 
@@ -148,7 +177,7 @@
     <div id="song-finished" class="modal">
         <div class="modal-content">
             <h4>That's it!</h4>
-            <p>You're all done. Go ahead and hit the "submit" button.</p>
+            <p>This round has finished. Go ahead and hit the "submit" button to continue.</p>
         </div>
         <div class="modal-footer">
             <a class=" modal-action modal-close waves-effect waves-green btn-flat">Ok</a>

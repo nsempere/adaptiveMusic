@@ -4,17 +4,33 @@
 
 var express = require('express');
 var compression = require('compression');
+var mini = require('express-minify');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var dotenv = require('dotenv');
+var AWS = require('aws-sdk');
+
+// Load environment variables
+dotenv.load();
+var debugURL = 'mongodb://'+process.env.MONGO_USR+':'+process.env.MONGO_PWD+'@localhost:27017/test';
 
 
-var debugURL = 'mongodb://localhost:27017/test';
+AWS.config.update({
+  apiVersions: {
+    dynamodb: '2012-08-10'
+  },
+  region: 'us-east-1',
+  endpoint: "http://localhost:8000"
+});
+
+var dynamodb = new AWS.DynamoDB();
+console.log(dynamodb);
+
 mongoose.connect(debugURL);
-
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
@@ -29,6 +45,7 @@ app.set('views', path.join(__dirname, 'views')); //Set path for html views
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(compression());
+app.use(mini());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -40,7 +57,6 @@ app.use(express.static(path.join(__dirname, 'public'))); //Set path for all asse
  * a.k.a. if they've filled out a questionnaire.
  */
 app.use('*', function(req, res, next){
-  console.log(req.cookies.profile_id);
   if (req.cookies.profile_id === undefined){
     if (req.originalUrl == '/' || req.originalUrl == '/questions') next();
     else res.redirect('/');
