@@ -2,4 +2,6 @@
 .idea
 .env
 .aws/*
+scan.js
+tables.js
 node_modules

@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 /* times are stored in milliseconds. */
 var trialSchema = mongoose.Schema({
     profile_id: String,
+    trial_id: String,
     song_title: String,
     n_back_task: Number,
     accuracy: Number,

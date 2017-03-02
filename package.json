@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "test": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "aws-sdk": "^2.22.0",
@@ -15,8 +14,6 @@
     "express": "~4.13.4",
     "express-minify": "~0.2.0",
     "materialize-css": "~0.97.8",
-    "mongodb": "~2.2.11",
-    "mongoose": "~4.7.0",
     "nodemon": "~1.11.0",
     "serve-favicon": "~2.3.0",
     "soundmanager2": "^2.97"

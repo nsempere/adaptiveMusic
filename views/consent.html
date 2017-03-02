@@ -10,7 +10,13 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $('#submit').click(function(){
-                window.location.replace('http://localhost:3000/soundCheck');
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:3000/confirmConsent',
+                    success: function(){
+                        window.location.replace('http://localhost:3000/audio');
+                    }
+                })
             });
         });
     </script>

@@ -9,10 +9,8 @@
 6. Run "npm start" or "nodemon ./bin/www" to start up the server.
 
 ### Purpose
-This server runs a simple web site that loads a randomly selected song and plays it while the user performs
-an nback task. At the same time, the user can rate the music based on how pleasant it is and how distracting it is.
-Each adjustment to the ratings is stored with a timestamp relative to the song that is playing.
-
-### To Do
-1. Add results from NBack test to data model
-2. Change model to store multiple trials per use
+This server runs a simple web experiment that loads a randomly selected song and 
+plays it while the user performs an nback task. At the same time, the user can 
+rate the music based on how pleasant it is and how distracting it is. Each adjustment 
+to the ratings is stored with a timestamp relative to the song that is playing.
+  
