@@ -7,13 +7,11 @@ var mini = require('express-minify');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var mongoose = require('mongoose');
 var dotenv = require('dotenv');
 var AWS = require('aws-sdk');
 
 // Load environment variables
 dotenv.load();
-//var debugURL = 'mongodb://'+process.env.MONGO_USR+':'+process.env.MONGO_PWD+'@localhost:27017/test';
 
 
 AWS.config.update({
@@ -26,15 +24,8 @@ AWS.config.update({
 
 var dynamodb = new AWS.DynamoDB();
 
-//mongoose.connect(debugURL);
-//var db = mongoose.connection;
-//db.on('error', console.error.bind(console, 'connection error:'));
-
-var Profile = require('./models/profiles');
-var Trial = require('./models/trials');
 var routes = require('./routes/index')(AWS);
 var app = express();
-
 
 app.set('views', path.join(__dirname, 'views')); //Set path for html views
 
