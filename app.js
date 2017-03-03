@@ -13,14 +13,24 @@ var AWS = require('aws-sdk');
 // Load environment variables
 dotenv.load();
 
+if (process.env.MODE == 'prod') {
+  AWS.config.update({
+    apiVersions: {
+      dynamodb: '2012-08-10'
+    },
+    region: 'us-west-2',
+    endpoint: "dynamodb.us-west-2.amazonaws.com"
+  });
+} else {
+  AWS.config.update({
+    apiVersions: {
+      dynamodb: '2012-08-10'
+    },
+    region: 'us-west-2',
+    endpoint: "http://localhost:8000"
+  });
+}
 
-AWS.config.update({
-  apiVersions: {
-    dynamodb: '2012-08-10'
-  },
-  region: 'us-west-2',
-  endpoint: "http://localhost:8000"
-});
 
 var dynamodb = new AWS.DynamoDB();
 

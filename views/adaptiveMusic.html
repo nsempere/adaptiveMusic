@@ -38,9 +38,9 @@
         /* If on 4th trial, finish the test. otherwise, do another trial */
         function postSuccess() {
             if (parseInt(getCookieValue('trial')) == 4)
-                window.location.replace("http://localhost:3000/thankyou");
+                window.location.replace("/thankyou");
             else
-                window.location.replace("http://localhost:3000/test");
+                window.location.replace("/test");
         }
 
         function randomSong() {
@@ -103,7 +103,7 @@
                     $('#submit').click(function() {
                         $.ajax({
                             type: 'POST',
-                            url: 'http://localhost:3000/results',
+                            url: '/results',
                             data: {
                                 title: mp3.id,
                                 accuracy: nbRatio,

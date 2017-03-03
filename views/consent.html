@@ -12,9 +12,9 @@
             $('#submit').click(function(){
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:3000/confirmConsent',
+                    url: '/confirmConsent',
                     success: function(){
-                        window.location.replace('http://localhost:3000/audio');
+                        window.location.replace('/audio');
                     }
                 })
             });
