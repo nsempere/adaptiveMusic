@@ -12,8 +12,8 @@ var AWS = require('aws-sdk');
 
 // Load environment variables
 dotenv.load();
-
 if (process.env.MODE == 'prod') {
+  console.log("Running in prod.");
   AWS.config.update({
     apiVersions: {
       dynamodb: '2012-08-10'
@@ -22,6 +22,7 @@ if (process.env.MODE == 'prod') {
     endpoint: "dynamodb.us-west-2.amazonaws.com"
   });
 } else {
+  console.log("Running in dev."); 
   AWS.config.update({
     apiVersions: {
       dynamodb: '2012-08-10'
@@ -33,7 +34,6 @@ if (process.env.MODE == 'prod') {
 
 
 var dynamodb = new AWS.DynamoDB();
-
 var routes = require('./routes/index')(AWS);
 var app = express();
 

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodejs ./bin/www",
+    "test": "nodemon ./bin/www"
   },
   "dependencies": {
     "aws-sdk": "^2.22.0",
