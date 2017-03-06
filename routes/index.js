@@ -136,16 +136,15 @@ module.exports = function(AWS) {
       res.status(400).send('No trial information was given');
     }
 
-    var date = new Date();
-    var trial_id = crypto.createHash('sha1').update(date.valueOf().toString()).digest('hex');
-    var profile_id = req.cookies.profile_id;
+    var date = (new Date()).valueOf().toString();
+    var trial_id = crypto.createHash('sha1').update(date).digest('hex');
     //First two test are 1-back, second two are 2-back
     var nbackTask = parseInt(req.cookies.trial) < 3 ? nbackTask = 1 : nbackTask = 2;
 
     var params = {
       TableName: 'Trials',
       Item: {
-        'profile_id': profile_id,
+        'profile_id': req.cookies.profile_id,
         'trial_id': trial_id,
         'trial_number': req.cookies.trial,
         'song_title': req.body.title,

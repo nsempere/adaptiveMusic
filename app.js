@@ -22,7 +22,7 @@ if (process.env.MODE == 'prod') {
     endpoint: "dynamodb.us-west-2.amazonaws.com"
   });
 } else {
-  console.log("Running in dev."); 
+  console.log("Running in dev.");
   AWS.config.update({
     apiVersions: {
       dynamodb: '2012-08-10'
