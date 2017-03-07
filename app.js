@@ -3,6 +3,7 @@
  */
 
 var express = require('express');
+var winston = require('winston');
 var mini = require('express-minify');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -12,6 +13,8 @@ var AWS = require('aws-sdk');
 
 // Load environment variables
 dotenv.load();
+
+//Set aws configuration depending on run settings
 if (process.env.MODE == 'prod') {
   console.log("Running in prod.");
   AWS.config.update({
@@ -32,9 +35,30 @@ if (process.env.MODE == 'prod') {
   });
 }
 
+var logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.File)({
+      name: 'error-log',
+      level: 'error',
+      filename: 'logs/errs.log',
+      timestamp: true
+    }),
+    new (winston.transports.File)({
+      name: 'info-log',
+      level: 'info',
+      filename: 'logs/info.log',
+      timestamp: true
+    }),
+    new (winston.transports.File)({
+      name: 'verbose-log',
+      level: 'verbose',
+      filename: 'logs/info-verbose.log',
+      timestamp: true
+    })
+  ]
+});
 
-var dynamodb = new AWS.DynamoDB();
-var routes = require('./routes/index')(AWS);
+var routes = require('./routes/index')(AWS, logger);
 var app = express();
 
 app.set('views', path.join(__dirname, 'views')); //Set path for html views

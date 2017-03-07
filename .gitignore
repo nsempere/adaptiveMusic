@@ -2,6 +2,6 @@
 .idea
 .env
 .aws/*
-scan.js
-tables.js
+logs/*
+npm-debug.log
 node_modules

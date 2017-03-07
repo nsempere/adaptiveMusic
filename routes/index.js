@@ -2,15 +2,15 @@ var express = require('express');
 var url = require('url');
 var crypto = require('crypto');
 
-module.exports = function(AWS) {
+module.exports = function(AWS, logger) {
 
   var router = express.Router();
   var documentClient = new AWS.DynamoDB.DocumentClient();
 
   /* GET home page. */
   router.get('/', function (req, res, next) {
-    var date = new Date();
-    var id = crypto.createHash('sha1').update(date.valueOf().toString()).digest('hex');
+    var date = (new Date()).valueOf().toString();
+    var id = crypto.createHash('sha1').update(date).digest('hex');
     res.cookie('profile_id', id, { maxAge: 900000, httpOnly: true });
     res.sendFile('consent.html', {'root': 'views'});
   });
@@ -38,12 +38,16 @@ module.exports = function(AWS) {
    */
   router.get('/test', function (req, res, next) {
     if (req.cookies.trial === undefined) {
+      logger.log('verbose', 'GET /test: First trial for participant with profile ID - %s', req.cookies.profile_id);
       res.cookie('trial', 1, { maxAge: 900000, httpOnly: false });
       res.sendFile('adaptiveMusic.html', {'root': 'views'});
     } else if (parseInt(req.cookies.trial) == 4){
+      logger.log('verbose', 'GET /test: Participant with profile ID - %s finished last test', req.cookies.profile_id);
       res.redirect('/thankyou');
     } else {
-      res.cookie('trial', parseInt(req.cookies.trial) + 1, { maxAge: 900000, httpOnly: false });
+      var nextTrial = parseInt(req.cookies.trial) + 1;
+      logger.log('verbose', 'GET /test: Participant with profile ID - %s on test %n', req.cookies.profile_id, nextTrial);
+      res.cookie('trial', nextTrial, { maxAge: 900000, httpOnly: false });
       res.sendFile('adaptiveMusic.html', {'root': 'views'});
     }
 
@@ -56,6 +60,7 @@ module.exports = function(AWS) {
 
 
   router.post('/confirmConsent', function(req, res, next){
+    logger.log('verbose', 'POST /confirmConsent: Participant with profile ID - %s has consented to continue');
     res.cookie('consent_confirmed', true, { maxAge: 900000, httpOnly: true });
     res.send("Consent established");
   });
@@ -79,9 +84,11 @@ module.exports = function(AWS) {
     var musicPreferences = [];
 
     if (req.cookies.profile_id === undefined){
+      logger.log('error', 'POST /questions: No profile ID was given');
       res.status(400).send('Request needs a profile ID');
     }
     if (req.cookies.sound_check === undefined){
+      logger.log('error', 'POST /questions: Participant with ID - %s has no sound_check results');
       res.status(400).send('Incomplete request. No sound-check results provided');
     }
 
@@ -114,10 +121,10 @@ module.exports = function(AWS) {
 
     documentClient.put(params, function(err, data){
       if (err) {
-        console.log("An error occurred while storing this profile:" + JSON.stringify(err, null, 2));
+        logger.log('error', 'POST /questions: An error occurred while', err);
         res.status(500).send(err);
       } else {
-        console.log("Success!");
+        logger.log('info', 'POST /questions: New entry to table "Profiles": %j', data);
         res.status(200).send(data);
       }
     });
@@ -130,9 +137,11 @@ module.exports = function(AWS) {
    */
   router.post('/results', function (req, res, next) {
     if (req.cookies.profile_id === undefined){
+      logger.log('error', 'POST /results: No profile ID was defined');
       res.status(400).send('Request needs a profile ID');
     }
     else if (req.cookies.trial === undefined){
+      logger.log('error', 'POST /results: No trial information was given');
       res.status(400).send('No trial information was given');
     }
 
@@ -158,7 +167,7 @@ module.exports = function(AWS) {
 
     documentClient.put(params, function(err, data){
       if (err) {
-        console.log("An error occurred while storing this trial:" + JSON.stringify(err, null, 2));
+        logger.log('error', 'POST /results: An error occurred while creating new entry to table "Trials":', err);
         res.status(500).send(err);
       } else {
         console.log("Success!");
