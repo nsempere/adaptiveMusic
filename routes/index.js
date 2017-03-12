@@ -121,11 +121,11 @@ module.exports = function(AWS, logger) {
 
     documentClient.put(params, function(err, data){
       if (err) {
-        logger.log('error', 'POST /questions: An error occurred while', err);
+        logger.log('error', 'POST /questions: An error occurred while adding entry to table "Profiles": ' + err);
         res.status(500).send(err);
       } else {
-        logger.log('info', 'POST /questions: New entry to table "Profiles": %j', data);
-        res.status(200).send(data);
+        logger.log('info', 'POST /questions: New entry to table "Profiles": ' + params.Item);
+        res.status(200).send(params.Item);
       }
     });
   });
@@ -170,7 +170,7 @@ module.exports = function(AWS, logger) {
         logger.log('error', 'POST /results: An error occurred while creating new entry to table "Trials":', err);
         res.status(500).send(err);
       } else {
-        console.log("Success!");
+        logger.log('info', 'POST /results: new entry to table "Trials": ' + params.Item);
         res.status(200).send(data);
       }
     });

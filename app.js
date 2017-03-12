@@ -37,6 +37,7 @@ if (process.env.MODE == 'prod') {
 
 var logger = new (winston.Logger)({
   transports: [
+    new (winston.transports.Console)(),
     new (winston.transports.File)({
       name: 'error-log',
       level: 'error',
