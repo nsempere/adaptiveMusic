@@ -35,6 +35,9 @@ if (process.env.MODE == 'prod') {
   });
 }
 
+var dynamoDb = new AWS.DynamoDB(); //.. inserted
+//console.log(dynamoDb);
+
 var logger = new (winston.Logger)({
   transports: [
     new (winston.transports.Console)(),

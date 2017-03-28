@@ -92,10 +92,14 @@ module.exports = function(AWS, logger) {
       res.status(400).send('Incomplete request. No sound-check results provided');
     }
 
-    for (var key in data) {
-      if (data[key] == 'on' && data.hasOwnProperty(key))
-        musicPreferences.push(key);
+    for (var s in data) {
+      console.log(s);
+      if (data[s] == 'on' && Object.prototype.hasOwnProperty.call(data,s))
+          musicPreferences.push(s);
     }
+
+   
+    
 
     var params = {
       TableName: 'Profiles',
@@ -119,11 +123,14 @@ module.exports = function(AWS, logger) {
       }
     };
 
+
     documentClient.put(params, function(err, data){
       if (err) {
+        console.log(err);
         logger.log('error', 'POST /questions: An error occurred while adding entry to table "Profiles": ' + err);
         res.status(500).send(err);
       } else {
+        console.log("no error")
         logger.log('info', 'POST /questions: New entry to table "Profiles": ' + params.Item);
         res.status(200).send(params.Item);
       }
