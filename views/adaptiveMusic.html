@@ -21,6 +21,8 @@
 
         var MIN = 1, MAX = 10; /* Change with number of mp3 files */
 
+        //.. keep track of which trial you are on. 
+        //.. 1back at start then 2back
         function getCookieValue(cookieName) {
             var cookieArray = decodeURIComponent(document.cookie).split(';');
             for (var i = 0; i < cookieArray.length; i++) {
@@ -43,6 +45,7 @@
                 window.location.replace("/test");
         }
 
+        //.. get a random song
         function randomSong() {
             return Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
         }
@@ -82,6 +85,7 @@
             var distractionLevel = document.getElementById('distractionLevel');
             var pleasantnessLevel = document.getElementById('pleasantnessLevel');
 
+
             // Load mp3 controls
             soundManager.setup({
                 url: '/node_modules/soundmanager2/swf/',
@@ -97,7 +101,8 @@
                         }
                     });
 
-                    initSlider(distractionLevel, distractionLog, mp3); // Initialize sliders for self-reporting
+                    initSlider(distractionLevel, distractionLog, mp3); 
+                    // Initialize sliders for self-reporting
                     initSlider(pleasantnessLevel, pleasantnessLog, mp3);
 
                     $('#submit').click(function() {
@@ -131,6 +136,8 @@
             $('#begin').click(function () {
                 var trialNumber = parseInt(getCookieValue('trial'));
                 (trialNumber < 3) ? startNBackTask(nb, 1, nbRatio, nbAvg) : startNBackTask(nb, 2, nbRatio, nbAvg);
+
+                //.. TODO: mp3.play() here 
             });
 
             $('#resultclose').click(function () {
